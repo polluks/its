@@ -8,6 +8,7 @@ set pd on
 set dpy enabled
 set dk disabled
 set stk enabled
+set imx enabled
 set tk enabled
 at tk 10000
 set mty enabled
