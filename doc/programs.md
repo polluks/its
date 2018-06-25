@@ -317,6 +317,7 @@
 - VT07, GT40 Datapoint emulator and Lisp display slave.
 - VTTIME, display running time on the terminal.
 - VV/VJ/DETREE, list jobs.
+- VT07 - GT40 Datapoint emulator and graphics.
 - XHOST, tool for replacing host nicknames with real hostnames.
 - XLISP, teaches Lisp -- part of TEACH system.
 - WA, a Wumpus advisor game.
