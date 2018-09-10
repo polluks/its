@@ -148,5 +148,6 @@ HOST : CHAOS 3412 : Amnesia.aosnet.CH : LISPM : LISPM : :
 HOST : CHAOS 3430 : Lambda-X.Victor.SE : Lambda : LISPM : :
 HOST : CHAOS 401 : Greek.UPDATE.UU.SE : Symbolics-3600 : LISPM : :
 HOST : CHAOS 442 : Lambda-D.UPDATE.UU.SE : Lambda : LISPM : :
+HOST :             10.2.3.4 : TT : PDP-10 : ITS : :
 
 
