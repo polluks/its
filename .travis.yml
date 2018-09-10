@@ -5,8 +5,6 @@ language: c
 dist: trusty
 sudo: required
 env:
-  - EMULATOR=simh BASICS=yes
-  - EMULATOR=klh10 BASICS=yes
   - EMULATOR=sims BASICS=yes
 matrix:
   exclude:
