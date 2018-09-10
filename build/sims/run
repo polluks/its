@@ -6,7 +6,7 @@ set cpu mpx
 set pd off
 set dpy enabled
 set tk enabled
-at tk 10000
+at tk 10000 speed=1200
 set mty enabled
 at mty 10003
 set ten11 enabled
