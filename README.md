@@ -45,8 +45,9 @@ The goals are:
 - To be able to set configurable options across the whole system, such
   as host name, IP address, hardware devices.
 
-The build currently runs on the SIMH and KLH10 emulators.  Of course,
-we'd be delighted to test this on a real KS10.
+The build currently runs on SIMH and KLH10 emulating KS10 and KA10.
+It has also been tested on a real KS10.  Of course, we'd be delighted
+to test on a real KA10 or KL10.
 
 ### Usage
 
