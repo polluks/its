@@ -17,7 +17,7 @@ PAGE    1                    FREEWAY CROSSING PROGRAM
   111      002004      15  LSZ        EVERY SECOND LOOP CHANGE SCORE
   112      010116      16  JMP LOOP2-2
   113      062713      17  LAC #SETFIRE
-  114      034604      18  ASZ
+  114      002001      18  ASZ
   115      034606      19  JMS SCOREMOD MODIFY SCOR
   116      035420      20  JMS EXEC   EXECUTE DISPLAY
   117      010102      21  JMP LOOP1  /LOOP IF SUBJECT NOT MOVING
@@ -34,7 +34,7 @@ PAGE    1                    FREEWAY CROSSING PROGRAM
   132      022716      32  DAC #RVEL  /FOR RANDOM VELOCITY
   133      004256      33  LAW VEL    /INDEXING
   134      022717      34  DAC #VEL   /FOR VELOCITIES
-  135      004256      35  LAW POSIT
+  135      004264      35  LAW POSIT
   136      022720      36  DAC #POSIT /FOR CURRENT POSITIONS
   137      104006      37  LWC 6      /LOOP SIX TIMES
   140      022721      38  DAC #CTR
@@ -367,7 +367,7 @@ PAGE    8                    FREEWAY CROSSING PROGRAM
   627      020636     344  DAC SDIV+2
   630      020640     345  DAC SDIV+4
   631      020642     346  DAC SDIV+6
-  632      062626     347  LAC #SCORE
+  632      062727     347  LAC #SCORE
   633      035214     348  JMS D
   634                 349 SDIV BSS 1
   635      035214     350  JMS D
@@ -392,13 +392,13 @@ PAGE    8                    FREEWAY CROSSING PROGRAM
   660      102001     369  ASN
   661      010672     370  JMP INSERT1
   662      066702     371  ADD =TAB1
-  663      066266     372  DAC #TMP
+  663      022722     372  DAC #TMP
   664      162722     373  I LAC #TMP
   665      122740     374  I DAC #NUM1
   666      032740     375  ISZ #NUM1
   667      100005     376  COA
   
-PAGE   9                     FREEWAY CROSSING PROGRAM
+PAGE    9                    FREEWAY CROSSING PROGRAM
 
   670      022737     377  DAC #BLANK CHANGE BLANK INDICATOR
   671      110657     378  I JMP INSERT RETURN
@@ -448,7 +448,7 @@ PAGE   9                     FREEWAY CROSSING PROGRAM
   745      035315     422  JMS OUTPUT OUTPUT CRASH OR NOT
   746      004015     423  LAW 15     CR
   
-PAGE   10                    FREEWAY CROSSING PROGRAM
+PAGE    10                   FREEWAY CROSSING PROGRAM
 
   747      035371     424  JMS WRITE
   750      004012     425  LAW 12      LF
@@ -466,8 +466,9 @@ PAGE   10                    FREEWAY CROSSING PROGRAM
   764      022727     437  DAC #SCORE
   765      034606     438  JMS SCOREMOD
   766      100001     439  CLA
-  770      022713     440  DAC #SETFIRE
-  771      022714     441  DAC #SCOREINC
+  767      022713     440  DAC #SETFIRE
+  770      022713     441  DAC #SCOREINC
+  771      022714     442  DAC #TIME
   772      010102     443  JMP LOOP1  RETURN
   773                 444 END BSS 1   /DID THE SUBJECT MAKE IT?
   774      062610     445  LAC CAR0
@@ -496,7 +497,407 @@ PAGE   10                    FREEWAY CROSSING PROGRAM
  1023      002002     468  ASP
  1024      100006     469  CIA        /ABSOLUTE VALUE
  1025      022743     470  DAC #YDIF
-  
+ 
+PAGE   11                    FREEWAY CROSSING PROGRAM
+
+ 1026      162720     471  I LAC #POSIT
+ 1027      003061     472  SAR 1
+ 1030      072710     473  SUB =550   /GET X DIFFERENCE
+ 1031      002002     474  ASP
+ 1032      100006     475  CIA        /ABSOLUTE VALUE
+ 1033      072676     476  SUB =37    /CHECK FOR X OVERLAP
+ 1034      102002     477  ASM
+ 1035      011042     478  JMP CRASHOUT /IF NONE JUMP OUT
+ 1036      062743     479  LAC #YDIF  /IF YES, CHECK FOR Y OVERLAP
+ 1037      072676     480  SUB =37    /CHECK FOR CRASH
+ 1040      002002     481  ASP        /SKIP IF NONE
+ 1041      011052     482  JMP CRASHED1
+ 1042      032720     483 CRASHOUT ISZ #POSIT /INCREMENT EVERYTHING
+ 1043      032717     484  ISZ #VFL
+ 1044      004044     485  LAW 44
+ 1045      066742     486  ADD #Y
+ 1046      022742     487  DAC #Y
+ 1047      032721     488  ISZ #CTR
+ 1050      011016     489  JMP CRASHLP /LOOP
+ 1051      111003     490  I JMP CRASH /RETURN IF NO CRASH
+ 1052      062711     491 CRASHED LAC =<D JMS CRUNCH
+ 1053      022652     492  DAC CRUNCH0
+ 1054      100005     493  COA
+ 1055      022741     494  DAC #CRASH CRASH INDICATOR - 1=YES
+ 1056      062736     495  LAC #TIME
+ 1057      072670     496  SUB =1
+ 1060      022736     497  DAC #TIME  DECREMENT TIME (TO TAKE CARE OF SCOREBOARD IN
+ 1061      100001     498  CLA
+ 1062      022727     499  DAC #SCORE
+ 1063      034606     500  JMS SCOREMOD SET SCORE TO ZERO IF CRASH
+ 1064      102020     501 CRASHED1 KSN CHECK KEYBOARD
+ 1065      011070     502  JMP .+3    /READ KEYBOARD
+ 1066      035420     503  JMS EXEC   /DISPLAY IF NO KEY
+ 1067      011064     504  JMP CRASHED1
+ 1070      100001     505  CLA
+ 1071      001023     506  KRC
+ 1072      046662     507  AND =177
+ 1073      076663     508  SAM =2     /CHECK FOR XMIT
+ 1074      011064     509  JMP CRASHED1 IF NOT LOOP
+ 1075      034731     510  JMS START  IF YES, START OVER
+ 1076                 511 RAND BSS 1  /SUBROUTINE FOR RANDOM NUMBER FROM ZERO TO...
+                      512             /USES 12 WORDS, 14 OCTAL.  USES LABEL RAND...
+                      513             /LIMIT IN AC. REQUIRES USE OF SUBROUTINES...
+                      514             /RANDOM NUMBER RETURNED IN AC
+ 1077      102001     515  ASN        /SKIP IF NONZERO
+ 1100      111076     516  I JMP RAND /RETURN
+ 1101      021105     517  DAC .+4
+ 
+PAGE   12                    FREEWAY CROSSING PROGRAM
+
+ 1102      035112     518  JMS NR     /GET RANDOM NUMBER 0-77777
+ 1103      061127     519  LAC RD     /LOAD IT
+ 1104      035130     520  JMS M      /MULTIPLY BY LIMIT
+ 1105                 521  BSS 1
+ 1106      003001     522  RAL 1      /GET BIT 0 IN LINK
+ 1107      061105     523  LAC .-2    /LOAD DOUBLEWORD
+ 1110      003001     524  RAL 1      /GET LINK IN BIT 15
+ 1111      111076     525  I JMP RAND /RETURN
+ 1112                 526 NR BSS 1    /RANDOM NUMBER GENERATOR
+                      527             /USES 11 WORDS, 13 OCTAL. USES LABELS NR,R...
+                      528             /RANDOM NUMBER RETURNED IN AC
+                      529             /REQUIRES SUBROUTINE M
+                      530             /GIVE STARTING SEED IN RD
+                      531             /CURRENT RANDOM NUMBER WILL BE STORED IN R...
+                      532             /RANDOM NUMBER IS INTEGER BETWEEN 0 AND 777...
+                      533             /ALGORITHM FOLLOWS:
+                      534             /B IS THE WORD LENGTH MINUS THE SIGN BIT. ...
+                      535             /MULTIPLY THE CURRENT RANDOM NUMBER BY 2**...
+                      536             /TAKE THE LEAST SIGNIFICANT B BITS OF THIS...
+                      537             /THAT IS YOUR CURRENT RANDOM NUMBER AND YOU...
+ 1113      061125     538  LAC RD-2
+ 1114      021117     539  DAC .+3
+ 1115      061127     540  LAC RD
+ 1116      035130     541  JMS M
+ 1117                 542  BSS 1
+ 1120      102001     543  ASN
+ 1121      061126     544  LAC RD-1   /IF ZERO, SET TO 77777 OCTAL
+ 1122      045126     545  AND RD-1   /ZERO THE SIGN BIT
+ 1123      021127     546  DAC RD
+ 1124      111112     547  I JMP NR   /RETURN
+ 1125      020003     548  OCT 20003
+ 1126      077777     549  OCT 77777
+ 1127                 550 RD BSS 1    /THE RANDOM NUMBER
+ 1130                 551 M BSS 1     /MULTIPLY ROUTINE
+                      552             /TAKES 52 WORDS CORE,64 OCTAL. USES LABEL ...
+                      553             /MULTIPLICAND ASSUMED IN AC
+                      554             /MULTIPLIER ASSUMED IN WORD AFTER JMS. RET...
+                      555             /BE MADE TO WORD FOLLOWING MULTIPLIER
+                      556             /RESULT RETURNED IN AC.
+                      557             /LINK SET IF RESULT OUTSIDE RANGE -2**15 TO...
+                      558             /OVERFLOW WORD RETURNED TO WORD FOLLOWING ...
+                      559             /ALGORITHM FOLLOWS:
+                      560             /X:=MULTIPLICAND
+                      561             /Q:=MULTIPLIER
+                      562             /A:=0
+                      563             /MSN:=TRUE
+                      564             /IF X<0 THEN BEGIN X:=-X
+                      
+PAGE   13                    FREEWAY CROSSING PROGRAM
+                      
+                      565             /                  MSN:=-MSN; END
+                      566             /IF Q<0 THEN BEGIN Q:=-Q
+                      567             /                  MSN:=-MSN; END
+                      568             /COMMENT IF MSN TRUE ,PRODUCT POS.
+                      569             /        IF MSN FALSE, PRODUCT NEG.
+                      570             /FOR K=-16 STEP 1 UNTIL -1 DO
+                      571             /BEGIN IF BIT 15(Q)=1 THEN A :=A+X
+                      572             /      DOUBLEWORDSHIFTRIGHTONEBIT(A,Q); EN...
+                      573             /IF A NE 0 OR BIT 0(Q) NE 0 THEN SETLINKON...
+                      574             /IF -MSN THEN Q:=-Q
+                      575             /COMMENT PRODUCT IN Q
+ 1131      100010     576  CLL        /CLEAR LINK
+ 1132      102002     577  ASM        /MULTIPLICAND NEGATIVE?
+ 1133      011136     578  JMP .+3    /NO
+ 1134      100006     579  CIA        /YES,2'S COMP AC
+ 1135      100020     580  CML        /COMP LINK(REMEMBER SIGN)
+ 1136      021213     581  DAC M+63   /MULTIPLICAND TO X
+ 1137      161130     582  I LAC M    /MULTIPLIER TO AC
+ 1140      102002     583  ASM        /MULTIPLIER NEG?
+ 1141      011144     584  JMP .+3    /NO
+ 1142      100006     585  CIA        /YES,2'S COMP MULTIPLIER
+ 1143      100020     586  CML        /COMP LINK,1=PROD NEG,0=PROD POS
+ 1144      021206     587  DAC M+56   /MULTIPLIER TO Q
+ 1145      100001     588  CLA        /CLEAR AC
+ 1146      021207     589  DAC M+57   /0 TO A
+ 1147      002004     590  LSZ        /LINK ZERO(PROD POS?)
+ 1150      100003     591  STA        /NO,PROD NEG,-1 TO MSN
+ 1151      021210     592  DAC M+60   /YES,0 TO MSN
+ 1152      104020     593  LWC 20     /-16 TO AC
+ 1153      021211     594  DAC M+61   /INITIALIZE COUNT
+ 1154      061206     595  LAC M+56   /Q INTO AC
+ 1155      003021     596  RAR 1      /Q(15) INTO LINK
+ 1156      061207     597  LAC M+57   /A INTO AC
+ 1157      102004     598  LSN        /Q(15)=1?
+ 1160      011162     599  JMP .+2    /NO
+ 1161      065213     600  ADD M+63   /YES,ADD X TO PARTIAL PROD A
+ 1162      021212     601  DAC M+62   /STORE PARTIAL PROD FOR OVERFLOW CHECK(...
+ 1163      100010     602  CLL        /CLEAR LINK (SET A(0)=0)
+ 1164      003021     603  RAR 1      /DOUBLEWORD
+ 1165      021207     604  DAC M+57   /SHIFT  (A)
+ 1166      121130     605  I DAC M    /(STORE OVERFLOW WORD IN WORD FOLLOWING...
+ 1167      061206     606  LAC M+56   /RIGHT  (Q)
+ 1170      003021     607  RAR 1      /ONE
+ 1171      021206     608  DAC M+56   /BIT
+ 1172      031211     609  ISZ M+61   /INCREMENT COUNTER,=0?
+ 1173      011155     610  JMP M+25   /NO, LOOP
+ 1174      061212     611  LAC M+62   /YES, EXIT LOOP;0=NO OVER.,NF  0=OVERFLOW(M...
+ 
+PAGE   14                    FREEWAY CROSSING PROGRAM
+
+ 1175      100010     612  CLL        /CLEAR LINK (NO OVERFLOW)
+ 1176      002001     613  ASZ        /TEST FOR OVERFLOW
+ 1177      100030     614  STL        /OVERFLOW, SET LINK
+ 1200      061206     615  LAC M+56   /PRODUCT Q INTO AC
+ 1201      031210     616  ISZ M+60   /TEST PROD SIGN (MSM)
+ 1202      100006     617  CIA        /SIGN POS,COMP AC
+ 1203      100006     618  CIA        /SIGN NEG,COMP AC
+ 1204      031130     619  ISZ M      /INCREMENT RETURN ADR
+ 1205      111130     620  I JMP M    /RETURN
+ 1206                 621  BSS 6      /STORAGE
+ 1214                 622 D BSS 1     /DIVIDE ROUTINE 
+                      623             /TAKES 65 WORDS CORE
+                      624             /DIVIDEND ASSUMED IN AC
+                      625             /DIVISOR ASSUMED WORD AFTER JMS, RETURN WI...
+                      626             /WORD FOLLOWING DIVISOR
+                      627             /QUOTIENT LEFT IN AC
+                      628             /REMAINDER LEFT IN WORD FOLLOWING JMS.  SI...
+                      629             /SAME AS THAT OF DIVIDEND
+                      630             /IF DIVISOR IS ZERO, LINK SET AND DIVIDEND...
+                      631             /LINK ZERO IF EVERYTHING NORMAL
+                      632             /ALGORITHM FOLLOWS:
+                      633             /Q:=DIVIDEND
+                      634             /X:=DIVISOR
+                      635             /A:=0
+                      636             /DSN:=TRUE
+                      637             /IF X<0 THEN BEGIN X:=-X
+                      638             /                  DSN:=-DSN; END
+                      639             /IF Q<0 THEN BEGIN Q:=-QUOTIENT
+                      640             /                  DSN:=-DSN
+                      641             /                  DIV:=FALSE; END
+                      642             /            ELSE DIV:=TRUE
+                      643             /IF X=0 THEN EXIT
+                      644             /COMMENT IF DSN TRUE,QUOTIENT POS, IF DSN ...
+                      645             /        IF DIV TRUE THEN DIVIDEND (AND RE...
+                      646             /        IF DIV FALSE THEN DIVIDEND (AND R...
+                      647             /FOR K=-16 STEP 1 UNTIL -1 DO`
+                      648             /BEGIN DOUBLEWORDROTATELEFTONEBIT(A,Q)
+                      649             /      IF A>=X THEN BEGIN A:=A-X; SETBIT15...
+                      650             /IF -DIV THEN A:=-A
+                      651             /IF -DSN THEN Q:=-QUOTIENT
+                      652             /COMMENT QUOTIENT IN Q, REMAINDER IN A
+ 1215      100010     653  CLL        /CLEAR LINK
+ 1216      102002     654  ASM        /DIVIDEND NEGATIVE?
+ 1217      011222     655  JMP .+3    /NO
+ 1220      100006     656  CIA        /YES,2'S COMP. AC
+ 1221      100020     657  CML        /COMP. LINK (REMEMBER SIGN)
+ 1222      021307     658  DAC D+73   /DIVIDEND IN QUOTIENT
+
+PAGE   15                    FREEWAY CROSSING PROGRAM
+
+ 1223      100003     659  STA        /-1 TO AC
+ 1224      102004     660  LSN        /DIVIDEND NEGATIVE?
+ 1225      100001     661  CLA        /NO,0 TO DIV(REMAINDER POS)
+ 1226      021310     662  DAC D+74   /YES,-1 TO DIV (REMAINDER NEG)
+ 1227      161214     663  I LAC D    /DIVISOR TO AC
+ 1230      102002     664  ASM        /DIVISOR NEGATIVE?
+ 1231      011234     665  JMP .+3    /NO
+ 1232      100006     666  CIA        /YES,2'S COMP DIVISOR
+ 1233      100020     667  CML        /COMP LINK(0=POS QUOT,1=NEG QUOT)
+ 1234      021311     668  DAC D+75   /DIVISOR IN X
+ 1235      002001     669  ASZ        /DIVISOR=0?
+ 1236      011242     670  JMP .+4    /NO
+ 1237      100030     671  STL        /YES,SET LINK
+ 1240      031214     672  ISZ D      /INCREMENT PAST DIVISOR TO RTN ADR
+ 1241      111214     673  I JMP D    /RETURN
+ 1242      100001     674  CLA        /CLEAR AC
+ 1243      021312     675  DAC D+76   /A=0
+ 1244      002004     676  LSZ        /QUOTIENT POS(LINK 0)?
+ 1245      100003     677  STA        /NO,-1 TO DSN(QUOTIENT NEG)
+ 1246      021313     687  DAC D+77   /YES,0 TO DSN (QUOTIENT POS)
+ 1247      104020     679  LWC 20     /-16 TO AC
+ 1250      021314     680  DAC D+100  /INITIALIZE COUNT IN D?T
+ 1251      061307     681  LAC D+73   /Q INTO AC
+ 1252      100010     682  CLL        /CLEAR LINK(SET Q(15)=0)
+ 1253      003001     683  RAL 1      /DOUBLE WORD
+ 1254      021307     684  DAC D+73   /ROTATE  (Q)
+ 1255      061312     685  LAC D+76   /LEFT  (A)
+ 1256      003001     686  RAL 1      /ONE
+ 1257      021312     687  DAC D+76   /BIT  (A)
+ 1260      071311     688  SUB D+75   /SUBTRACT X FROM A
+ 1261      002002     689  ASP        /IS A>=X(AC POS)
+ 1262      011267     690  JMP D+53   /NO, GO ROTATE
+ 1263      021312     691  DAC D+76   /YES,AC NOW A
+ 1264      004001     692  LAW 1      /SET BIT
+ 1265      051307     693  IOR D+73   /15
+ 1266      021307     694  DAC D+73   /OF Q
+ 1267      031314     695  ISZ D+100  /BUMP COUNTER,COUNT=0?
+ 1270      011251     696  JMP D+35   /NO,LOOP AGAIN
+ 1271      102001     697  ASN        /IF DIVIDEND = 0, A (REMAINDER IN ALGORITH...
+ 1272      011300     698  JMP .+6    /LEAVE WORD AFTER JMS (REMAINDER) UNTOUCHED
+ 1273      061312     699  LAC D+76   /REMAINDER INTO AC
+ 1274      031310     700  ISZ D+74   /REMAINDER NEG?
+ 1275      100006     701  CIA        /NO POS,2'S COMP
+ 1276      100006     702  CIA        /YES 2'S COMP IT
+ 1277      121214     703  I DAC D    /PLACE IT IN WORD AFTER JMS
+ 1300      031214     704  ISZ D      /POINT TO RETURN ADR
+ 1301      061307     705  LAC D+73   /QUOTIENT Q INTO AC
+
+PAGE   16                    FREEWAY CROSSING PROGRAM
+
+ 1302      031313     706  ISZ D+77   /QUOTIENT NEG
+ 1303      100006     707  CIA        /NO,POS,2'S COMP IT
+ 1304      100006     708  CIA        /YES,2'S COMP IT
+ 1305      100010     709  CLL        /CLEAR LINK (DIVISOR NE 0)
+ 1306      111214     710  I JMP D    /RETURN
+ 1307                 711  BSS 6      /STORAGE
+ 1315                 712 OUTPUT BSS 1 OUTPUT A NUMBER AND A COMMA
+ 1316      022722     713  DAC #TMP
+ 1317      100001     714  CLA
+ 1320      022737     715  DAC #BLANK BLANK INDICATOR
+ 1321      004012     716  LAW 12     CONVERT TO DECIMAL
+ 1322      021330     717  DAC ODIV
+ 1323      021332     718  DAC ODIV+2
+ 1324      021334     719  DAC ODIV+4
+ 1325      021336     720  DAC ODIV+6
+ 1326      062722     721  LAC #TMP
+ 1327      035214     722  JMS D
+ 1330                 723 ODIV BSS 1
+ 1331      035214     724  JMS D
+ 1332                 725  BSS 1
+ 1333      035214     726  JMS D
+ 1334                 727  BSS 1
+ 1335      035214     728  JMS D
+ 1336                 729  BSS 1
+ 1337      035355     730  JMS OUT1   START OUTPUTTING DECIMAL DIGITS
+ 1340      061336     731  LAC ODIV+6
+ 1341      035355     732  JMS OUT1
+ 1342      061334     733  LAC ODIV+4
+ 1343      035355     734  JMS OUT1
+ 1344      061332     735  LAC ODIV+2
+ 1345      035355     736  JMS OUT1
+ 1346      100005     737  COA        CHANGE BLANK INDICATOR FOR LAST DIGIT
+ 1347      022737     738  DAC #BLANK
+ 1350      061330     739  LAC ODIV
+ 1351      035355     740  JMS OUT1
+ 1352      004054     741  LAW 54     COMMA
+ 1353      035371     742  JMS WRITE
+ 1354      111315     743  I JMP OUTPUT RETURN
+ 1355                 744 OUT1 BSS 1  OUTPUT DIGIT UNLESS BLANK
+ 1356      022722     745  DAC #TMP
+ 1357      002001     746  ASZ
+ 1360      011364     747  JMP .+4
+ 1361      062737     748  LAC #BLANK
+ 1362      102001     749  ASN
+ 1363      111355     750  I JMP OUT1 RETURN IF BLANK
+ 1364      100005     751  COA
+ 1365      022737     752  DAC #BLANK OTHERWISE SET BLANK IND. TO 1
+ 
+PAGE   17                    FREEWAY CROSSING PROGRAM
+
+ 1366      062722     753  LAC #TMP
+ 1367      035371     754  JMS WRITE
+ 1370      111355     755  I JMP OUT1 RETURN
+ 1371                 756 WRITE BSS 1 SUBROUTINE TO PACK OUTPUT IN BUFFER B
+ 1372      022744     757  DAC #OTD
+ 1373      062735     758  LAC #OTC   FIRST OR SECOND BYTE INDICATOR
+ 1374      032735     759  ISZ #OTC
+ 1375      003021     760  RAR 1
+ 1376      002004     761  LSZ
+ 1377      011406     762  JMP .+7
+ 1400      062744     763  LAC #OTD   FIRST BYTE
+ 1401      003043     764  SAL 3
+ 1402      003043     765  SAL 3
+ 1403      003042     766  SAL 2
+ 1404      122734     767  I DAC #OTA PUT IN BUFFER
+ 1405      111371     768  I JMP WRITE RETURN
+ 1406      162734     769  I LAC #OTA SECOND BYTE
+ 1407      066744     770  ADD #OTD
+ 1410      122734     771  I DAC #OTA PUT IN BUFFER
+ 1411      032734     772  ISZ #OTA
+ 1412      100001     773  CLA
+ 1413      122734     774  I DAC #OTA EXTRA ZERO WORD
+ 1414      062734     775  LAC #OTA
+ 1415      076712     776  SAM =10000 RETURN UNLESS BUFFER FULL
+ 1416      111371     777  I JMP WRITE RETURN
+ 1417      000000     778  HLT        IF SO STOP, NOW MUST OUTPUT AND RESTART AT...
+ 1420                 779 EXEC BSS 1  /EXECUTE ONE DISPLAY CYCLE
+ 1421      102010     780  DSN
+ 1422      011421     781  JMP .-1
+ 1423      002200     782  SSF
+ 1424      011423     783  JMP .-1
+ 1425      001071     784  SCF
+ 1426      100041     785  LDA        /LOAD DATA SWITCHES
+ 1427      102002     786  ASM        /SKIP IF BIT 0 ON
+ 1430      000000     787  HLT        /OTHERWISE STOP
+ 1431      006142     788  LAW DIS    /GET DISPLAY ADDRESS
+ 1432      001003     789  DLA
+ 1433      003100     790  DON        /RUN DISPLAY
+ 1434      111420     791  I JMP EXEC /RETURN
+ 1435      030330     792 LRD1 INC FB30
+ 1436      154330     793  INC 3030
+ 1437      154330     794  INC 3030
+ 1440      154330     795  INC 3030
+ 1441      100131     796  INC D00A131
+ 1442      005000     797  D IXM
+ 1443      005000     798  D IXM
+ 1444      005000     799  D IXM
+ 
+PAGE   18                    FREEWAY CROSSING PROGRAM
+ 
+ 1445      004040     800  D RJM
+ 1446      004200     801 LLD2 D DXM
+ 1447      004200     802  D DXM
+ 1450      030230     803  INC ED30
+ 1451      174370     804  INC B-30-30
+ 1452      174370     805  INC B-30-30
+ 1453      174370     806  INC-B-30-30
+ 1454      174111     807  INC -30A111
+ 1455      004200     808  D DXM
+ 1456      004200     809  D DXM
+ 1457      004040     810  D RJM
+ 1460      005000     811 LRD3 D IXM
+ 1461      005000     812  D IXM
+ 1462      030270     813  INC FD-30
+ 1463      154330     814  INC B3030
+ 1464      154330     815  INC B3030
+ 1465      154330     816  INC B3030
+ 1466      154131     817  INC  30A131
+ 1467      005000     818  D IXM
+ 1470      004040     819  D RJM
+ 1471      030370     820 LLD4 INC EB-30
+ 1472      174370     821  INC -30-30
+ 1473      174370     822  INC -30-30
+ 1474      174370     823  INC -30-30
+ 1475      100111     824  INC D00A111
+ 1476      004200     825  D DXM
+ 1477      004200     826  D DXM
+ 1500      004200     827  D DXM
+ 1501      004200     828  D DXM
+ 1502      004040     829  D RJM
+ 1503      030330     830 LR5 INC EB30
+ 1504      154330     831  INC 3030
+ 1505      154330     832  INC 3030
+ 1506      154131     833  INC 30A131
+ 1507      005000     834  D IXM
+ 1510      004040     835  D RJM
+ 1511      030273     836 CAR INC FD-33 /WORD CAR
+ 1512      124370     837  INC -10B-30
+ 1513      170307     838  INC -200-3
+ 1514      143720     839  INC 0-320
+ 1515      154210     840  INC 30D10
+ 1516      151713     841  INC B2313
+ 1517      153717     842  INC 2-31-3
+ 1520      125370     843  INC D-12B-30
+ 1521      114226     844  INC D302-2
+ 1522      141703     845  INC B0303
+ 1523      154325     846  INC 302-1
+ 
 PAGE   19                    FREEWAY CROSSING PROGRAM
 
  1524      142765     847  INC 0-1-2-1
@@ -654,7 +1055,7 @@ PAGE   22                    FREEWAY CROSSING PROGRAM
  1743      135603     990  INC D-3303
  1744      101357     991  INC 028-1-3
  1745      167756     992  INC -1-3-1-2
- 1746      165603     993  INC -12-13
+ 1746      165353     993  INC -12-13
  1747      165603     994  INC -13D03
  1750      101603     995  INC 0303
  1751      101603     996  INC 0303
@@ -1066,11 +1467,11 @@ PAGE    30                   FREEWAY CROSSING PROGRAM
  2547      052104    1378  D JMS LETTER+76  T
  2550      005000    1379  D IXM
  2551      052013    1380  D JMS LETTER+5   C
- 2552      052096    1381  D JMS LETTER     A
+ 2552      052006    1381  D JMS LETTER     A
  2553      052067    1382  D JMS LETTER+61  R
  2554      005000    1383  D IXM
  2555      052076    1384  D JMS LETTER+70  S
- 2556      052063    1385  D JMS LETTER+54  P
+ 2556      052062    1385  D JMS LETTER+54  P
  2557      052027    1386  D JMS LETTER+21  E
  2560      052027    1387  D JMS LETTER+21  E
  2561      052021    1388  D JMS LETTER+5   D
@@ -1126,14 +1527,14 @@ PAGE    31                   FREEWAY CROSSING PROGRAM
  2640      024300    1435  D LXA 4300
  2641      052127    1436  D JMS REST
  2642      051511    1437  D JMS CAR
- 2643      011400    1438 CAR65 D LXA 1400
+ 2643      011400    1438 CAR6 D LXA 1400
  2644      024500    1439  D LXA 4500
  2645      052127    1440  D JMS REST
  2646      051511    1441  D JMS CAR
- 2647      023700    1442  D LXA 3700
+ 2647      013700    1442  D LXA 3700
  2650      022000    1443  D LXA 2000
  2651      052127    1444  D JMS REST
- 2652      004000    1445 CRLNCHO D NOP
+ 2652      004000    1445 CRUNCH0 D NOP
  2653      014000    1446  D LXA 4000  /CENTER BEAM AND WAIT
  2654      024000    1447  D LYA 4000
  2655      000000    1448  D HLT
@@ -1168,3 +1569,38 @@ PAGE    32                   FREEWAY CROSSING PROGRAM
  3027                1474 B BSS 1      PRINT BUFFER
  2656                1475  REL 1       LITERALS
                      1476  END
+                     
+PAGE    33                   FREEWAY CROSSING PROGRAM              
+
+LITERALS
+
+ 2656      002640
+ 2657      002637
+ 2660      011400
+ 2661      011500
+ 2662      000177
+ 2663      000002
+ 2664      062563
+ 2665      004000
+ 2666      062610
+ 2667      000004
+ 2670      000001
+ 2671      000006
+ 2672      000011
+ 2673      000017
+ 2674      000077
+ 2675      077700
+ 2676      000037
+ 2677      003027
+ 2700      051511
+ 2701      077777
+ 2702      000300
+ 2703      005000
+ 2704      004000
+ 2705      062541
+ 2706      023100
+ 2707      024700
+ 2710      000550
+ 2711      051645
+ 2712      010000
+  
