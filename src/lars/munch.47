@@ -1,0 +1,81 @@
+title Munching Squares
+
+
+a=1
+b=2
+c=3
+d=4
+e=5
+x=10
+y=11
+p=17
+
+dstop==003000
+point==020000
+inten==002000
+verti==200000
+
+loc 42
+	tsint
+
+loc 100
+
+start:	move p,[-pdllen,,pdl-1]
+
+	setzb x,y
+
+	;Get the 340 started.
+	.dstart [-dlen,,dlist-1]
+	 .lose
+
+	;Enable interrupts for I/O error and input channels.
+	;.suset [.smask,,[%piioc]]
+	;.suset [.smsk2,,[<0_styi>+<1_ttyi>]]	;STY input disabled for now.
+	;.suset [.rioc+styi,,a]
+
+loop:	datai y
+	addb x,y
+	rotc y,-22
+	xor x,y
+
+	;movei x,500.
+	;movei y,700.
+	
+	move a,x
+	andi a,1777
+	iori a,point
+	hrrm a,dlist
+	move a,y
+	andi a,1777
+	iori a,verti+inten
+	hrlm a,dlist+1
+
+	move a,[100000]
+	sojge a,.
+
+	jrst loop
+
+die:	.logout 1,			;Orderly exit.
+
+;Interrupt handler.
+tsint:	0
+	0
+	;move b,tsint
+	;jumpn b,ioint			;Bit 0 means I/O channel interrupt.
+	;trne b,%piioc
+	; jrst iocerr
+	;.suset [.sadf2,,[<1_styi>+<1_ttyi>]]
+	.dismis tsint+1
+
+.vector pdl(pdllen==100)
+
+dlen==2000
+dlist:	.byte 18.
+	point+17+<5_4>		;Set intentity and scale, go to point mode.
+	point			;Set X.
+	verti+<1_10.>		;Set Y, go to parameter mode.
+	dstop
+	.byte
+block dlen
+
+end start

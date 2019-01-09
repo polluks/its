@@ -1,0 +1,111 @@
+title Munching Squares
+
+
+a=1
+b=2
+c=3
+d=4
+e=5
+x=10
+y=11
+p=17
+
+dstop==003000
+point==020000
+inten==002000
+verti==200000
+
+loc 42
+	tsint
+
+loc 100
+
+start:	move p,[-pdllen,,pdl-1]
+
+	setzb x,y
+
+	;Unmap a page to trigger a display MPV.
+	.call [ setz
+		sixbit /corblk/
+		movei 0
+		movei %jself
+		setzi empty_-10. ]
+	 .value
+
+	;Make the first two pages worth of display list.
+	jsr draw
+	jsr draw
+
+	;Enable display MPV interrupt.
+	.suset [.smask,,[%pidis]]
+
+	;Get the 340 started.  Slightly more than a page to trigger MPV.
+	.dstart [-2001,,dlist1-1]
+	 .lose
+
+	;Do the rest from interrupts.
+	jfcl
+	 .hang
+
+draw:	0
+	move b,dlist
+	movei a,point+17+<5_4>	;Set intentity and scale, go to point mode.
+	idpb a,b
+	movei c,2000-2
+
+draw1:	datai y
+	addb x,y
+	rotc y,-22
+	xor x,y
+
+	move a,x
+	andi a,1777
+	iori a,point
+	idpb a,b
+
+	move a,y
+	andi a,1777
+	iori a,point+verti+inten
+	idpb a,b
+
+	sojge c,draw1
+
+	move a,dlist
+	exch a,dlist+1
+	movem a,dlist
+
+	jrst @draw
+
+
+die:	.logout 1,			;Orderly exit.
+
+;Interrupt handler.
+tsint:	0
+	0
+	move d,dlist+1
+	sos d
+	hrli d,-2001
+	.dstart d
+	 .lose
+	jsr draw
+	.suset [.sadf1,,[%pidis]]
+	.dismis tsint+1
+
+.vector pdl(pdllen==100)
+
+;Display list pointers.  The first is drawn into, the second is displayed.
+dlist:	442200,,dlist1
+	442200,,dlist2
+
+constants
+
+.=<<.+1777>&-2000>
+dlist1:	03000,,0
+
+.=<<.+1777>&-2000>
+empty:	0
+
+.=<<.+1777>&-2000>
+dlist2:	03000,,0
+
+end start
