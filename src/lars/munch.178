@@ -1,0 +1,129 @@
+title Munching Squares
+
+
+a=1
+b=2
+c=3
+d=4
+e=5
+v=10
+x=11
+y=x+1
+p=17
+
+dstop==003000
+point==020000
+inten==002000
+verti==200000
+
+dlen=1000
+
+loc 42
+	tsint
+
+loc 100
+
+start:	move p,[-pdllen,,pdl-1]
+
+	.open 1,[.uao,,'TTY]
+	 .value
+
+	.value [asciz //]
+	setzb x,y
+
+	;Make the first two pages worth of display list.
+	jsr draw
+	jsr draw
+
+ifn 0,[
+	.dstart [-100,,[
+		.byte 18.
+		point+17+<5_4>
+		point+500.
+		point+verti+inten+700.
+		0
+		dstop
+		]-1]
+]
+
+	;Enable display interrupt.
+	.suset [.smask,,[%pidis]]
+
+	;Get the 340 started.
+	.dstart dstart
+	 .lose
+
+	;Do the rest from interrupts.
+	jfcl
+	 .hang
+
+draw:	0
+
+	move b,dlist
+	movei a,point+17+<5_4>	;Set intentity and scale, go to point mode.
+	idpb a,b
+	movei c,2*dlen-5
+
+draw1:	move x,[1001002]
+	addb x,v
+	rotc x,-22
+	xor x,v
+
+	move a,x
+	lsh a,10.-36.
+	iori a,point
+	idpb a,b
+	sos c
+
+	move a,y
+	lsh a,10.-36.
+	iori a,point+verti+inten
+	idpb a,b
+	sos c
+
+	jumpge c,draw1
+
+	movei a,0
+	idpb a,b
+	movei a,dstop
+	idpb a,b
+
+	move a,dlist
+	exch a,dlist+1
+	movem a,dlist
+
+	jrst @draw
+
+
+die:	.logout 1,			;Orderly exit.
+
+;Interrupt handler.
+tsint:	0
+	0
+	move d,dlist+1
+	sos d
+	hrrm d,d1
+	.dstart dstart
+	 .lose
+	jsr draw
+	.iot 1,["X]
+	.dismis tsint+1
+
+.vector pdl(pdllen==100)
+
+dstart:	d1,,d2
+d1:	-1000,,dlist1-1
+d2:	[-2000,,300000],,0
+
+;Display list pointers.  The first is drawn into, the second is displayed.
+dlist:	442200,,dlist1
+	442200,,dlist2
+
+constants
+
+dlist1:	block dlen
+dlist2:	block dlen
+
+	1
+
+end start
