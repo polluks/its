@@ -3626,7 +3626,7 @@ SUBTTL	Mode "K" - Chaosnet connections
 
 KAOS:	SKIPE JHFLAG
 	 JRST KAOS1
-	SKIPE CHUSR
+	SKIPE CHSUSR
 	 JRST KAOS2
 	ATYPE [ASCIZ /
 This machine has no Chaosnet./]
