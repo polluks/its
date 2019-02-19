@@ -13,6 +13,19 @@ respond "*" "purify\033g"
 respond "TS MIDAS" "midas;ts 324\r"
 respond "*" ":kill\r"
 
+# MACTAP
+respond "*" ":midas;324 sysbin;_sysen2; mactap\r"
+expect ":KILL"
+
+# TECO6
+respond "*" ":midas sysbin;teco6 rel_.teco.; teco <\r"
+expect ":KILL"
+respond "*" ":mudsys;stinkm\r"
+respond "*" "M.TECO.;OTECO LOADER\033@\033\033"
+respond "100" "D\033\033"
+respond "\n" "\033y dsk0:.;@ teco6\r"
+respond "*" ":kill\r"
+
 respond "*" ":link teach;teach emacs,emacs;teach emacs\r"
 type ":vk\r"
 respond "*" "teach\033\023"
