@@ -20,7 +20,7 @@ To get the `pdp10-ka` online with reasonably low effort, use the included SIMH N
 PDP10-KL instructions are in the making and while they should be the same as for KA they are not tested completely yet.
 
 #### Using the host's TAP interface
-This enables networking with Network Address Translation (NAT) where the SIMH network adapter gets an IP address from a on network DHCP server. If you are running multiple SIMH instances with diffrerent networking requirements make sure to look at **Configuring networking in KA/KL with static IP assignment**.
+This enables networking with Network Address Translation (NAT) where the SIMH network adapter gets an IP address from a on network DHCP server. If you are running multiple SIMH instances with different networking requirements make sure to look at **Configuring networking in KA/KL with static IP assignment**.
 Depending on your host you will need to create a 
 - TAP network interface
 - Network Bridge
