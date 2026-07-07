@@ -1,6 +1,6 @@
 ## Basic editing with IMEDIT
 
-IMEDIT is a page oriented editor for Imlacs, simliar to TECO.  You
+IMEDIT is a page oriented editor for Imlacs, similar to TECO.  You
 edit one page at a time, and when done advance to the next page in the
 file.  If you are familiar with TECO, you may see that many commands
 have a similar counterpart in IMEDIT.

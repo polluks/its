@@ -88,7 +88,7 @@ As far as we know there were several LISP LOGO versions:
 LISP LOGO had available several packages of special functions:
 - TV TURTLE - LISP LOGO package provides Knight TV system Logo Graphics.
 - DISPLAY TURTLE - LISP LOGO package provides 340 / GT40 display Logo Graphics.
-- GERMLAND - some kind of display turtle for character displays without grahics capabilities.
+- GERMLAND - some kind of display turtle for character displays without graphics capabilities.
 - MUSIC BOX - the package provides Logo music capabilities.
 
 The LLOGO variant of LISP LOGO was recently brought back to life during several amazing
@@ -153,7 +153,7 @@ Solomon on language specification.
 
 But please note, that the 11LOGO version 1007 currently available on ITS is very early
 MIT 11LOGO one. It is in essence just logo language evaluator with limited turtle display
-340 grapics capabilities only. A brief description of the built-in procedures (primitives)
+340 graphics capabilities only. A brief description of the built-in procedures (primitives)
 in 11LOGO version that we have is available at `its/doc/_info_/11logo.order` document.
 
 ### MIT PLOGO

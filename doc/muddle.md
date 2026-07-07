@@ -117,7 +117,7 @@ Type Sname of Save File: HELLO
 :KILL
 ```
 
-This will produce an exectutable file called TS HELLO.
+This will produce an executable file called TS HELLO.
 
 ### More Information
 

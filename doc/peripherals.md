@@ -26,7 +26,7 @@ This information was collected from SYSTEM; CONFIG >
 - XGP printer
 - Chaosnet (through 10-11 or I/O bus)
 - Knight TVs
-- PDP-6 auxilliary processor
+- PDP-6 auxiliary processor
 - 340 display
 - E&S LDS-1 display
 - Sylvania tablet
