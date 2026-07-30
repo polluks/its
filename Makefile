@@ -64,13 +64,13 @@ DOC = info _info_ sysdoc sysnet syshst kshack _teco_ emacs emacs1 c kcc \
       combat pdl minits mits_s chaos hal -pics- imlac maint cent ksc klh \
       digest prs decus bsg madman hur lmdoc rrs danny netwrk klotz hello \
       clu r mini nova sits jay rjl nlogo mprog2 mudbug cfs hudini shrdlu \
-      mb decsys
+      mb decsys gjs gls schip tgq
 BIN = sys sys1 sys2 emacs _teco_ lisp liblsp alan sail comlap \
       c decsys graphs draw datdrw fonts fonts1 fonts2 games macsym \
       maint _www_ gt40 llogo bawden sysbin -pics- lmman shrdlu imlac \
       pdp10 madman survey rrs clu clucmp rws mini mudsav mudsys libmud \
       librm1 librm2 librm3 librm4 mbprog mprog1 mprog mprog2 mudbug mudtmp \
-      _batch
+      _batch gls xfont
 MINSRC = midas system $(DDT) $(SALV) $(KSFEDR) $(DUMP)
 
 # These are not included on the tape.
